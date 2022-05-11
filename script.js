@@ -1,6 +1,9 @@
 const Game = (() => {
-    gameBoard = Board();
+    const player = playerFactory('Player', 'X', true)
+    const computer = playerFactory('Computer', 'O', false)
+    gameBoard = Board(player, computer);
     gameBoard.draw();
+
 
 
     return {
@@ -8,29 +11,50 @@ const Game = (() => {
     };
 });
 
-const Board = (() => {
+const Board = ((player1, player2) => {
 
-    const grid = ['X', 'O', 'X',
-                  'O', 'X', 'O',
-                  'O', 'X', 'O']
+    const grid = [null, null, null,
+                  null, null, null,
+                  null, null, null]
+
+    const boardBoxes = document.querySelectorAll(".board-box")
+
+    boardBoxes.forEach((box) => {
+        box.addEventListener('click', () => {
+            mark(box);
+        })
+    })
 
     const draw = () => {
         boardBoxes.forEach((box) => {
-            console.log(box.getAttribute("data-box"));
             box.textContent = grid[box.getAttribute("data-box")];
         })
     }
 
+    const mark = (box) => {
+        if (player1.active && !box.textContent) {
+            grid[box.getAttribute("data-box")] = 'X';
+            player1.active = false;
+            player2.active = true;
+        } else if (player2.active && !box.textContent) {
+            grid[box.getAttribute("data-box")] = 'O';
+            player2.active = false;
+            player1.active = true;
+        }
+        draw();
+    }
+
     return {
-        draw
+        draw, mark
     };
 });
 
-const playerFactory = () => {
+const playerFactory = (name, marker, active) => {
 
-    return { } ;
+    return {name, marker, active} ;
 }
 
-const boardBoxes = document.querySelectorAll(".board-box")
-
 Game();
+
+
+
