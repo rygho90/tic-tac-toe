@@ -1,162 +1,118 @@
-const Game = (() => {
-    const player = playerFactory('Player', 'X', true)
-    const computer = playerFactory('Computer', 'O', false)
-    gameBoard = Board(player, computer);
-    gameBoard.draw();
+const gameBoard = (() => {
+    const board = Array(9);
 
+    const getBoard = () => board;
 
+    const updateBoard = (index, newVal) => {
+        board[index] = newVal;
+    }
 
     return {
-
+        getBoard,
+        updateBoard
     };
-});
+})();
 
-const Board = ((player1, player2) => {
-
-    const grid = [null, null, null,
-                  null, null, null,
-                  null, null, null]
-    let gameOver = false;
-                
-    const boardBoxes = document.querySelectorAll(".board-box")
-    const topLeft = document.querySelector(".top-left");
-    const topCenter = document.querySelector(".top-center");
-    const topRight = document.querySelector(".top-right");
-    const midLeft = document.querySelector(".mid-left");
-    const midCenter = document.querySelector(".mid-center");
-    const midRight = document.querySelector(".mid-right");
-    const botLeft = document.querySelector(".bot-left");
-    const botCenter = document.querySelector(".bot-center");
-    const botRight = document.querySelector(".bot-right");
-
-    boardBoxes.forEach((box) => {
-        box.addEventListener('click', () => {
-            if (!gameOver) {
-                mark(box);
-            } else {
-                clear();
-            }
-            
-        })
-    })
-
-    const clear = () => {
-        console.log('test clear')
-        for (let i = 0; i < grid.length; i ++) {
-            grid[i] = null;
-        }
-        boardBoxes.forEach((box) => {
-            box.style.color = 'black';
-        })
-        player1.active = true;
-        player2.active = false;
-        draw();
-        gameOver = false;
-    }
-
-    const draw = () => {
-        boardBoxes.forEach((box) => {
-            box.textContent = grid[box.getAttribute("data-box")];
-        })
-    }
-
-    const mark = (box) => {
-        if (player1.active && !box.textContent) {
-            grid[box.getAttribute("data-box")] = 'X';
-        } else if (player2.active && !box.textContent) {
-            grid[box.getAttribute("data-box")] = 'O';
-        }
-        draw();
-        checkWinner();
-        if (gameOver) {
-            console.log("Game over!")
-        } else {
-            player1.active = !player1.active
-            player2.active = !player2.active
-        }
-
-    }
-
-    const getActive = () => {
-        if (player1.active) return player1.name
-        return player2.name
-    }
-
-    const checkWinner = () => {
-        let winner = null;
-
-        // Check for row
-        if (grid[0] && grid[0] == grid[1] && grid[0] == grid[2]) {
-            winner = getActive()
-            topLeft.style.color = "lightgreen";
-            topCenter.style.color = "lightgreen";
-            topRight.style.color = "lightgreen";
-        }
-        if (grid[3] && grid[3] == grid[4] && grid[3] == grid[5]) {
-            winner = getActive()
-            midLeft.style.color = "lightgreen";
-            midCenter.style.color = "lightgreen";
-            midRight.style.color = "lightgreen";
-        }
-        if (grid[6] && grid[6] == grid[7] && grid[6] == grid[8]) {
-            winner = getActive()
-            botLeft.style.color = "lightgreen";
-            botCenter.style.color = "lightgreen";
-            botRight.style.color = "lightgreen";
-        }
-        
-        // Check for column
-        if (grid[0] && grid[0] == grid[3] && grid[0] == grid[6]) {
-            topLeft.style.color = "lightgreen";
-            midLeft.style.color = "lightgreen";
-            botLeft.style.color = "lightgreen";
-            winner = getActive()
-        }
-        if (grid[1] && grid[1] == grid[4] && grid[1] == grid[7]) {
-            winner = getActive()
-            topCenter.style.color = "lightgreen";
-            midCenter.style.color = "lightgreen";
-            botCenter.style.color = "lightgreen";
-        }
-        if (grid[2] && grid[2] == grid[5] && grid[2] == grid[8]) {
-            winner = getActive()
-            topRight.style.color = "lightgreen";
-            midRight.style.color = "lightgreen";
-            botRight.style.color = "lightgreen";
-        }
-
-        // Check for diagonal
-        if (grid[0] && grid[0] == grid[4] && grid[0] == grid[8]) {
-            winner = getActive()
-            topLeft.style.color = "lightgreen";
-            midCenter.style.color = "lightgreen";
-            botRight.style.color = "lightgreen";
-        }
-        if (grid[2] && grid[2] == grid[4] && grid[2] == grid[6]) {
-            winner = getActive()
-            topRight.style.color = "lightgreen";
-            midCenter.style.color = "lightgreen";
-            botLeft.style.color = "lightgreen";
-        }
-
-        if (winner) {
-            console.log(`${winner} wins!`)
-            gameOver = true;
-        }
-    }
-
-
-    return {
-        draw, mark
-    };
-});
-
-const playerFactory = (name, marker, active) => {
-
-    return {name, marker, active} ;
+const Player = (name, marker) => {
+    return {name, marker};
 }
 
-Game();
+const gameController = (() => {
+    const playerOne = Player("Player One", 'X');
+    const playerTwo = Player("Player Two", 'O');
+    const winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8],  // rows
+                           [0, 3, 6], [1, 4, 7], [2, 5, 8],  // columns
+                           [0, 4, 8], [2, 4, 6]]             // diagonals
+    let activePlayer = playerOne;
 
+    const getActivePlayer = () => activePlayer;
 
+    const changeActivePlayer = () => {
+        activePlayer == playerOne ? activePlayer = playerTwo : activePlayer = playerOne;
+    }
+    
+    const checkWinner = () => {
+        const boardArray = gameBoard.getBoard()
+        let win = false;
 
+        // Check each combo against the current board
+        winningCombos.forEach(combo => {
+            if (boardArray[combo[0]] &&                         
+                boardArray[combo[0]] == boardArray[combo[1]] &&  
+                boardArray[combo[0]] == boardArray[combo[2]]) {  
+                win = true; 
+                console.log('Win!')
+            }
+        })
+
+        
+        return win;
+    }
+
+    const checkTie = () => {
+        const boardArray = gameBoard.getBoard()
+        
+        // Loop through the gameboard to check for empty spaces
+        for (i = 0; i < 9; i++) {
+            if (!boardArray[i]) return false  // Not yet a tie if there are any
+        }
+
+        console.log('Tie!')
+        return true
+    }
+
+    return {
+        getActivePlayer,
+        changeActivePlayer,
+        checkWinner,
+        checkTie
+    };
+})();
+
+const displayController = (() => {
+    const boardBoxes = document.querySelectorAll(".board-box");
+
+    // Clicking on a box will attempt to draw a mark
+    boardBoxes.forEach((box) => {
+        box.addEventListener('click', () => {
+            drawMark(box);
+        })
+    })
+    
+    const drawBoard = () => {
+        const boardArray = gameBoard.getBoard()
+
+        // Loop through each box display, draw content of respective board array element
+        boardBoxes.forEach((box) => {
+            box.textContent = boardArray[box.getAttribute("data-box")];
+        })
+    };
+
+    const drawMark = (box) => {
+        const boardArray = gameBoard.getBoard()
+        let player = gameController.getActivePlayer();
+
+        // If the clicked box is empty...
+        if (!boardArray[box.getAttribute("data-box")]) {
+            // Add the active player's mark to the board array
+            gameBoard.updateBoard(box.getAttribute("data-box"), player.marker)
+
+            // Refresh the visual board, drawing the new array content
+            drawBoard();
+
+            // Check for a win
+            gameController.checkWinner();
+
+            // Check for a tie
+            gameController.checkTie();
+
+            // If game is still going, move on to the next player's turn
+            gameController.changeActivePlayer();
+        }
+
+    }
+
+    return {
+        drawBoard
+    };
+})();
