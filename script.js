@@ -24,6 +24,7 @@ const gameController = (() => {
                            [0, 3, 6], [1, 4, 7], [2, 5, 8],  // columns
                            [0, 4, 8], [2, 4, 6]]             // diagonals
     let activePlayer = playerOne;
+    let gameOver = false;
 
     const getActivePlayer = () => activePlayer;
 
@@ -41,11 +42,12 @@ const gameController = (() => {
                 boardArray[combo[0]] == boardArray[combo[1]] &&  
                 boardArray[combo[0]] == boardArray[combo[2]]) {  
                 win = true; 
+                gameOver = true;
                 console.log('Win!')
+                displayController.colorWin(combo);
             }
         })
 
-        
         return win;
     }
 
@@ -58,14 +60,21 @@ const gameController = (() => {
         }
 
         console.log('Tie!')
-        return true
+        displayController.colorTie();
+        gameOver = true;
+        return true;
+    }
+
+    const getGameOver = () => {
+        return gameOver;
     }
 
     return {
         getActivePlayer,
         changeActivePlayer,
         checkWinner,
-        checkTie
+        checkTie,
+        getGameOver
     };
 })();
 
@@ -92,8 +101,8 @@ const displayController = (() => {
         const boardArray = gameBoard.getBoard()
         let player = gameController.getActivePlayer();
 
-        // If the clicked box is empty...
-        if (!boardArray[box.getAttribute("data-box")]) {
+        // If the clicked box is empty and game isn't over...
+        if (!boardArray[box.getAttribute("data-box")] && !gameController.getGameOver()) {
             // Add the active player's mark to the board array
             gameBoard.updateBoard(box.getAttribute("data-box"), player.marker)
 
@@ -112,7 +121,21 @@ const displayController = (() => {
 
     }
 
+    const colorWin = (combo) => {
+        combo.forEach(index => {
+            boardBoxes[index].style.color = "lightgreen";
+        })
+    }
+
+    const colorTie = () => {
+        boardBoxes.forEach((box) => {
+            box.style.color = "red";
+        })
+    }
+
     return {
-        drawBoard
+        drawBoard,
+        colorWin,
+        colorTie
     };
 })();
