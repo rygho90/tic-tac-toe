@@ -1,5 +1,5 @@
 const gameBoard = (() => {
-    const board = Array(9);
+    let board = Array(9);
 
     const getBoard = () => board;
 
@@ -7,9 +7,14 @@ const gameBoard = (() => {
         board[index] = newVal;
     }
 
+    const clearBoard = () => {
+        board = Array(9);
+    }
+
     return {
         getBoard,
-        updateBoard
+        updateBoard,
+        clearBoard
     };
 })();
 
@@ -45,6 +50,7 @@ const gameController = (() => {
                 gameOver = true;
                 console.log('Win!')
                 displayController.colorWin(combo);
+                displayController.showRestart();
             }
         })
 
@@ -69,17 +75,27 @@ const gameController = (() => {
         return gameOver;
     }
 
+    const newGame = () => {
+        activePlayer = playerOne;
+        gameOver = false;
+        gameBoard.clearBoard();
+        displayController.colorNew();
+        displayController.drawBoard();
+    }
+
     return {
         getActivePlayer,
         changeActivePlayer,
         checkWinner,
         checkTie,
-        getGameOver
+        getGameOver,
+        newGame
     };
 })();
 
 const displayController = (() => {
     const boardBoxes = document.querySelectorAll(".board-box");
+    const restartBtn = document.querySelector(".restart-btn");
 
     // Clicking on a box will attempt to draw a mark
     boardBoxes.forEach((box) => {
@@ -133,9 +149,25 @@ const displayController = (() => {
         })
     }
 
+    const colorNew = () => {
+        boardBoxes.forEach((box) => {
+            box.style.color = "black";
+        })
+    }
+
+    const showRestart = () => {
+        restartBtn.style.display = 'inline';
+    }
+
+    restartBtn.addEventListener('click', () => {
+        gameController.newGame();
+    })
+
     return {
         drawBoard,
         colorWin,
-        colorTie
+        colorTie,
+        colorNew,
+        showRestart
     };
 })();
