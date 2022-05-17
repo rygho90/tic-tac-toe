@@ -139,19 +139,19 @@ const displayController = (() => {
 
     const colorWin = (combo) => {
         combo.forEach(index => {
-            boardBoxes[index].style.color = "lightgreen";
+            boardBoxes[index].style.color = "#22c55e";
         })
     }
 
     const colorTie = () => {
         boardBoxes.forEach((box) => {
-            box.style.color = "red";
+            box.style.color = "#fca5a5";
         })
     }
 
     const colorNew = () => {
         boardBoxes.forEach((box) => {
-            box.style.color = "black";
+            box.style.color = "#dbeafe";
         })
     }
 
