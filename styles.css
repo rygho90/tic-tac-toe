@@ -140,7 +140,8 @@ body {
     font-weight: bold;
 }
 
-.game-mode-modal {
+.game-mode-modal,
+.player-name-modal {
     width: 400px;
     height: 300px;
     border: solid 1px black;
@@ -158,17 +159,55 @@ body {
     position: fixed;
     top: 46%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, -50%) scale(0);
     transition: 200ms ease-in-out;
     z-index: 5;
 }
 
+.modal-active {
+    transform: translate(-50%, -50%) scale(1);
+}
+
 .player-mode,
-.computer-mode {
+.computer-mode,
+.start-btn {
     width: 150px;
     height: 40px;
     border-radius: 10px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     background-color: #d1d5db;
     font-weight: bold;
+}
+
+.overlay {
+    position: fixed;
+    opacity: 0;
+    transition: 200ms ease-in-out;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgb(0, 0, 0, .5);
+    pointer-events: none;
+}
+
+.overlay-active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.enter-player-name {
+    text-align: center;
+    font-size: 0.8em;
+}
+
+.start-btn {
+    background-color: #37c76e;
+}
+
+input[type=text] {
+    padding: 3px;
+    margin-top: 3px;
+    background-color: #d1d5db;
+    border-radius: 4px;
 }

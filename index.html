@@ -48,11 +48,26 @@
         </div>
     </div>
 
-    <div class="game-mode-modal">
+    <div class="game-mode-modal modal-active">
         <div>Choose Game Mode:</div>
         <div><button class="player-mode">Vs. Player</button></div>
         <div><button class="computer-mode">Vs. Computer</button></div>
     </div>
+
+    <div class="player-name-modal">
+        <div>Enter Player Names</div>
+        <div class="enter-player-name">
+            <div class="div">Player One:</div>
+            <input type="text" id="player-one" maxlength="10" size="12">
+        </div>
+        <div class="enter-player-name">
+            <div class="div">Player Two:</div>
+            <input type="text" id="player-two" maxlength="10" size="12">
+        </div>
+        <div><button class="start-btn">Start Game</button></div>
+    </div>
+
+    <div class="overlay overlay-active"></div>
 
     <div class="restart-div"><button class="restart-btn">Restart</button></div>
 </body>

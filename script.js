@@ -181,3 +181,22 @@ const displayController = (() => {
         showRestart
     };
 })();
+
+const menuController = (() => {
+    const modeModal = document.querySelector(".game-mode-modal");
+    const nameModal = document.querySelector(".player-name-modal");
+    const playerModeBtn = document.querySelector(".player-mode");
+    const startGameBtn = document.querySelector(".start-btn");
+    const overlay = document.querySelector(".overlay");
+
+    playerModeBtn.addEventListener("click", () => {
+        modeModal.classList.remove("modal-active");
+        nameModal.classList.add("modal-active");
+    })
+
+    startGameBtn.addEventListener("click", () => {
+        nameModal.classList.remove("modal-active");
+        overlay.classList.remove("overlay-active");
+    })
+
+})();
