@@ -18,13 +18,13 @@ const gameBoard = (() => {
     };
 })();
 
-const Player = (name, marker) => {
-    return {name, marker};
+const Player = (name, marker, color) => {
+    return {name, marker, color};
 }
 
 const gameController = (() => {
-    const playerOne = Player("Player One", 'X');
-    const playerTwo = Player("Player Two", 'O');
+    const playerOne = Player("Player One", 'X', '#22c55e');
+    const playerTwo = Player("Player Two", 'O', '#a855f7');
     const winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8],  // rows
                            [0, 3, 6], [1, 4, 7], [2, 5, 8],  // columns
                            [0, 4, 8], [2, 4, 6]]             // diagonals
@@ -116,30 +116,38 @@ const displayController = (() => {
     const drawMark = (box) => {
         const boardArray = gameBoard.getBoard()
         let player = gameController.getActivePlayer();
+        let gameOver = false;
 
         // If the clicked box is empty and game isn't over...
         if (!boardArray[box.getAttribute("data-box")] && !gameController.getGameOver()) {
             // Add the active player's mark to the board array
             gameBoard.updateBoard(box.getAttribute("data-box"), player.marker)
+            box.style.color = player.color;
 
             // Refresh the visual board, drawing the new array content
             drawBoard();
 
             // Check for a win
-            gameController.checkWinner();
+            gameOver = gameController.checkWinner();
 
-            // Check for a tie
-            gameController.checkTie();
+            // If no win, check for a tie
+            if (!gameOver) {
+                gameController.checkTie();
+            }
 
             // If game is still going, move on to the next player's turn
-            gameController.changeActivePlayer();
+            if (!gameOver) {
+                gameController.changeActivePlayer();
+            }
+
         }
 
     }
 
     const colorWin = (combo) => {
+        let player = gameController.getActivePlayer();
         combo.forEach(index => {
-            boardBoxes[index].style.color = "#22c55e";
+            boardBoxes[index].style.backgroundColor = player.color;
         })
     }
 
@@ -151,7 +159,7 @@ const displayController = (() => {
 
     const colorNew = () => {
         boardBoxes.forEach((box) => {
-            box.style.color = "#dbeafe";
+            box.style.backgroundColor = "#2563eb";
         })
     }
 
