@@ -68,6 +68,7 @@ const gameController = (() => {
         console.log('Tie!')
         displayController.colorTie();
         gameOver = true;
+        displayController.showRestart();
         return true;
     }
 
@@ -153,7 +154,8 @@ const displayController = (() => {
 
     const colorTie = () => {
         boardBoxes.forEach((box) => {
-            box.style.color = "#fca5a5";
+            box.style.color = "#d1d5db";
+            box.style.backgroundColor = "#d1d5db";
         })
     }
 
