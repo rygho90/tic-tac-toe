@@ -36,13 +36,18 @@ const gameController = (() => {
     const changeActivePlayer = () => {
         activePlayer == playerOne ? activePlayer = playerTwo : activePlayer = playerOne;
 
-        const currentMarker = document.querySelector(".current-marker");
-        currentMarker.textContent = activePlayer.marker;
+        const currentPlayer = document.querySelector(".current-player");
+        currentPlayer.textContent = activePlayer.name;
     }
 
-    const origMarker = () => {
-        const currentMarker = document.querySelector(".current-marker");
-        currentMarker.textContent = 'X';
+    const setFirstPlayer = () => {
+        const currentPlayer = document.querySelector(".current-player");
+        currentPlayer.textContent = activePlayer.name;
+    }
+
+    const origPlayer = () => {
+        const currentPlayer = document.querySelector(".current-player");
+        currentPlayer.textContent = 'Player One';
     }
     
     const checkWinner = () => {
@@ -90,8 +95,8 @@ const gameController = (() => {
         gameBoard.clearBoard();
         displayController.colorNew();
         displayController.drawBoard();
-        const currentMarker = document.querySelector(".current-marker");
-        currentMarker.textContent = activePlayer.marker;
+        const currentPlayer = document.querySelector(".current-player");
+        currentPlayer.textContent = activePlayer.name;
     }
 
     const setPlayerNames = (playerOneName, playerTwoName) => {
@@ -150,7 +155,7 @@ const gameController = (() => {
         displayController.drawBoard();
         setPlayerNames(playerOne.name, playerTwo.name);
         origOrder();
-        origMarker();
+        origPlayer();
         menuController.showTitle();
     }
 
@@ -163,7 +168,8 @@ const gameController = (() => {
         newRound,
         setPlayerNames,
         switchOrder,
-        newGame
+        newGame,
+        setFirstPlayer
     };
 })();
 
@@ -310,6 +316,7 @@ const menuController = (() => {
             nameModal.classList.remove("modal-active");
             overlay.classList.remove("overlay-active");
             gameController.setPlayerNames(playerOneName, playerTwoName)
+            gameController.setFirstPlayer();
             playerOneNameInput.value = "";
             playerTwoNameInput.value = "";
         }
