@@ -18,13 +18,13 @@ const gameBoard = (() => {
     };
 })();
 
-const Player = (name, marker, color) => {
-    return {name, marker, color};
+const Player = (name, marker, color, num, order) => {
+    return {name, marker, color, num, order};
 }
 
 const gameController = (() => {
-    const playerOne = Player("Player One", 'X', '#22c55e');
-    const playerTwo = Player("Player Two", 'O', '#a855f7');
+    const playerOne = Player("Player One", 'X', '#22c55e', 1, 1);
+    const playerTwo = Player("Player Two", 'O', '#a855f7', 2, 2);
     const winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8],  // rows
                            [0, 3, 6], [1, 4, 7], [2, 5, 8],  // columns
                            [0, 4, 8], [2, 4, 6]]             // diagonals
@@ -35,6 +35,9 @@ const gameController = (() => {
 
     const changeActivePlayer = () => {
         activePlayer == playerOne ? activePlayer = playerTwo : activePlayer = playerOne;
+
+        const currentMarker = document.querySelector(".current-marker");
+        currentMarker.textContent = activePlayer.marker;
     }
     
     const checkWinner = () => {
@@ -48,9 +51,9 @@ const gameController = (() => {
                 boardArray[combo[0]] == boardArray[combo[2]]) {  
                 win = true; 
                 gameOver = true;
-                console.log('Win!')
                 displayController.colorWin(combo);
-                displayController.showRestart();
+                displayController.updateScore();
+                menuController.announceWinner();
             }
         })
 
@@ -67,8 +70,9 @@ const gameController = (() => {
 
         console.log('Tie!')
         displayController.colorTie();
+        displayController.updateTies();
+        menuController.announceTie();
         gameOver = true;
-        displayController.showRestart();
         return true;
     }
 
@@ -76,12 +80,43 @@ const gameController = (() => {
         return gameOver;
     }
 
-    const newGame = () => {
-        activePlayer = playerOne;
+    const newRound = () => {
+        playerOne.order == 1 ? activePlayer = playerOne : activePlayer = playerTwo;
         gameOver = false;
         gameBoard.clearBoard();
         displayController.colorNew();
         displayController.drawBoard();
+    }
+
+    const setPlayerNames = (playerOneName, playerTwoName) => {
+        playerOne.name = playerOneName;
+        playerTwo.name = playerTwoName;
+
+        const playerOneNameDisplay = document.querySelector(".player-one-name");
+        const playerTwoNameDisplay = document.querySelector(".player-two-name");
+        playerOneNameDisplay.textContent = playerOne.name;
+        playerTwoNameDisplay.textContent = playerTwo.name;
+    }
+
+    const switchOrder = () => {
+        const oneMarker = document.querySelector(".player-one-marker");
+        const twoMarker = document.querySelector(".player-two-marker");
+
+        if (playerOne.order == 1) {
+            playerOne.order = 2;
+            playerOne.marker = 'O';
+            playerTwo.order = 1;
+            playerTwo.marker = 'X';
+            oneMarker.textContent = playerOne.marker;
+            twoMarker.textContent = playerTwo.marker;
+        } else {
+            playerOne.order = 1;
+            playerOne.marker = 'X';
+            playerTwo.order = 2;
+            playerTwo.marker = 'O';
+            oneMarker.textContent = playerOne.marker;
+            twoMarker.textContent = playerTwo.marker;
+        }
     }
 
     return {
@@ -90,13 +125,14 @@ const gameController = (() => {
         checkWinner,
         checkTie,
         getGameOver,
-        newGame
+        newRound,
+        setPlayerNames,
+        switchOrder
     };
 })();
 
 const displayController = (() => {
     const boardBoxes = document.querySelectorAll(".board-box");
-    const restartBtn = document.querySelector(".restart-btn");
 
     // Clicking on a box will attempt to draw a mark
     boardBoxes.forEach((box) => {
@@ -150,6 +186,7 @@ const displayController = (() => {
         combo.forEach(index => {
             boardBoxes[index].style.backgroundColor = player.color;
         })
+
     }
 
     const colorTie = () => {
@@ -165,29 +202,53 @@ const displayController = (() => {
         })
     }
 
-    const showRestart = () => {
-        restartBtn.style.display = 'inline';
+    const updateScore = () => {
+        let player = gameController.getActivePlayer();
+        const playerOneScoreDisplay = document.querySelector(".player-one-score");
+        const playerTwoScoreDisplay = document.querySelector(".player-two-score");
+
+        if (player.num == 1) {
+            let score = parseInt(playerOneScoreDisplay.textContent);
+            score++;
+            playerOneScoreDisplay.textContent = score;
+        } else {
+            let score = parseInt(playerTwoScoreDisplay.textContent);
+            score++;
+            playerTwoScoreDisplay.textContent = score;
+        }
+        console.log(player);
     }
 
-    restartBtn.addEventListener('click', () => {
-        gameController.newGame();
-    })
+    const updateTies = () => {
+        const tieCountDisplay = document.querySelector(".tie-count");
+        let ties = parseInt(tieCountDisplay.textContent);
+        ties++;
+        tieCountDisplay.textContent = ties;
+    }
 
     return {
         drawBoard,
         colorWin,
         colorTie,
         colorNew,
-        showRestart
+        updateScore,
+        updateTies
     };
 })();
 
 const menuController = (() => {
     const modeModal = document.querySelector(".game-mode-modal");
     const nameModal = document.querySelector(".player-name-modal");
+    const roundOverModal = document.querySelector(".round-over-modal");
+    const tiedModal = document.querySelector(".tied-modal");
     const playerModeBtn = document.querySelector(".player-mode");
     const startGameBtn = document.querySelector(".start-btn");
     const overlay = document.querySelector(".overlay");
+    const playerOneNameInput = document.querySelector("#player-one");
+    const playerTwoNameInput = document.querySelector("#player-two");
+    const winnerName = document.querySelector(".winner-name");
+    const newRoundBtn = document.querySelector(".new-round-btn");
+    const tieNewRoundBtn = document.querySelector(".tie-new-round-btn");
 
     playerModeBtn.addEventListener("click", () => {
         modeModal.classList.remove("modal-active");
@@ -195,8 +256,46 @@ const menuController = (() => {
     })
 
     startGameBtn.addEventListener("click", () => {
-        nameModal.classList.remove("modal-active");
-        overlay.classList.remove("overlay-active");
+        let playerOneName = playerOneNameInput.value;
+        let playerTwoName = playerTwoNameInput.value;
+        if (playerOneName.length > 0 && playerTwoName.length > 0) {
+            nameModal.classList.remove("modal-active");
+            overlay.classList.remove("overlay-active");
+            gameController.setPlayerNames(playerOneName, playerTwoName)
+        }
+
     })
+
+    newRoundBtn.addEventListener("click", () => {
+        roundOverModal.classList.remove("modal-active");
+        overlay.classList.remove("overlay-active");
+        gameController.switchOrder();
+        gameController.newRound();
+    })
+
+    tieNewRoundBtn.addEventListener("click", () => {
+        tiedModal.classList.remove("modal-active");
+        overlay.classList.remove("overlay-active");
+        gameController.switchOrder();
+        gameController.newRound();
+    })
+
+
+    const announceWinner = () => {
+        let winner = gameController.getActivePlayer();
+        winnerName.textContent = winner.name;
+        roundOverModal.classList.add("modal-active");
+        overlay.classList.add("overlay-active");
+    }
+
+    const announceTie = () => {
+        tiedModal.classList.add("modal-active");
+        overlay.classList.add("overlay-active");
+    }
+
+    return {
+        announceWinner,
+        announceTie
+    };
 
 })();

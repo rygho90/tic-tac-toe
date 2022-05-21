@@ -15,7 +15,7 @@
                 <span class="player-one-marker">X</span>&nbsp; <span class="player-two-marker">O</span>
             </div>
             <div class="turn-indicator">
-                Turn:&nbsp;<span class="current-maker">X</span>
+                Turn:&nbsp;<span class="current-marker">X</span>
             </div>
             <div class="end-game">
                 <button class="end-btn">End Game</button>
@@ -48,7 +48,7 @@
         </div>
     </div>
 
-    <div class="game-mode-modal modal-active">
+    <div class="game-mode-modal modal-active"> <!--  -->
         <div>Choose Game Mode:</div>
         <div><button class="player-mode">Vs. Player</button></div>
         <div><button class="computer-mode">Vs. Computer</button></div>
@@ -67,8 +67,23 @@
         <div><button class="start-btn">Start Game</button></div>
     </div>
 
+    <div class="round-over-modal">
+        <div><span class="winner-name">Player</span> wins the round!</div>
+        <div class="round-over-btns">
+            <button class="new-round-btn">New Round</button>
+            <button class="end-game-btn">End Game</button>
+        </div>
+    </div>
+
+    <div class="tied-modal">
+        <div><span class="winner-name">Tie!</div>
+        <div class="round-over-btns">
+            <button class="tie-new-round-btn">New Round</button>
+            <button class="tie-end-game-btn">End Game</button>
+        </div>
+    </div>
+
     <div class="overlay overlay-active"></div>
 
-    <div class="restart-div"><button class="restart-btn">Restart</button></div>
 </body>
 </html>
