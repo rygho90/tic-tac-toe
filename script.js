@@ -241,6 +241,7 @@ const menuController = (() => {
     const nameModal = document.querySelector(".player-name-modal");
     const roundOverModal = document.querySelector(".round-over-modal");
     const tiedModal = document.querySelector(".tied-modal");
+    const titleModal = document.querySelector(".title-modal");
     const playerModeBtn = document.querySelector(".player-mode");
     const startGameBtn = document.querySelector(".start-btn");
     const overlay = document.querySelector(".overlay");
@@ -249,6 +250,7 @@ const menuController = (() => {
     const winnerName = document.querySelector(".winner-name");
     const newRoundBtn = document.querySelector(".new-round-btn");
     const tieNewRoundBtn = document.querySelector(".tie-new-round-btn");
+    const newGameBtn = document.querySelector(".new-game-btn");
 
     playerModeBtn.addEventListener("click", () => {
         modeModal.classList.remove("modal-active");
@@ -279,6 +281,13 @@ const menuController = (() => {
         gameController.switchOrder();
         gameController.newRound();
     })
+
+    newGameBtn.addEventListener("click", () => {
+        titleModal.classList.remove("modal-active");
+        modeModal.classList.add("modal-active");
+    })
+
+
 
 
     const announceWinner = () => {

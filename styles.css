@@ -132,7 +132,8 @@ body {
 .game-mode-modal,
 .player-name-modal,
 .round-over-modal,
-.tied-modal {
+.tied-modal,
+.title-modal {
     width: 400px;
     height: 300px;
     border: solid 1px black;
@@ -191,7 +192,8 @@ body {
 .new-round-btn,
 .end-game-btn,
 .tie-new-round-btn,
-.tie-end-game-btn {
+.tie-end-game-btn,
+.new-game-btn {
     width: 100px;
     height: 40px;
     border-radius: 10px;
@@ -203,6 +205,10 @@ body {
 .tie-new-round-btn {
     background-color: #37c76e;
     margin-right: 20px;
+}
+
+.new-game-btn {
+    background-color: #37c76e;
 }
 
 .end-game-btn,
@@ -229,4 +235,32 @@ input[type=text] {
     margin-top: 3px;
     background-color: #d1d5db;
     border-radius: 4px;
+}
+
+.title {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+}
+
+.tic,
+.tac,
+.toe {
+    font-size: 2.25em;
+    font-weight: bolder;
+}
+
+.tic {
+    align-self: flex-start;
+    color: #15803d;
+}
+
+.tac {
+    align-self: center;
+    color: #d1d5db;
+}
+
+.toe {
+    align-self: flex-end;
+    color: #7e22ce;
 }
