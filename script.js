@@ -39,6 +39,11 @@ const gameController = (() => {
         const currentMarker = document.querySelector(".current-marker");
         currentMarker.textContent = activePlayer.marker;
     }
+
+    const origMarker = () => {
+        const currentMarker = document.querySelector(".current-marker");
+        currentMarker.textContent = 'X';
+    }
     
     const checkWinner = () => {
         const boardArray = gameBoard.getBoard()
@@ -68,7 +73,6 @@ const gameController = (() => {
             if (!boardArray[i]) return false  // Not yet a tie if there are any
         }
 
-        console.log('Tie!')
         displayController.colorTie();
         displayController.updateTies();
         menuController.announceTie();
@@ -86,6 +90,8 @@ const gameController = (() => {
         gameBoard.clearBoard();
         displayController.colorNew();
         displayController.drawBoard();
+        const currentMarker = document.querySelector(".current-marker");
+        currentMarker.textContent = activePlayer.marker;
     }
 
     const setPlayerNames = (playerOneName, playerTwoName) => {
@@ -107,16 +113,45 @@ const gameController = (() => {
             playerOne.marker = 'O';
             playerTwo.order = 1;
             playerTwo.marker = 'X';
-            oneMarker.textContent = playerOne.marker;
-            twoMarker.textContent = playerTwo.marker;
+            oneMarker.style.color = playerTwo.color;
+            twoMarker.style.color = playerOne.color;
         } else {
             playerOne.order = 1;
             playerOne.marker = 'X';
             playerTwo.order = 2;
             playerTwo.marker = 'O';
-            oneMarker.textContent = playerOne.marker;
-            twoMarker.textContent = playerTwo.marker;
+            oneMarker.style.color = playerOne.color;
+            twoMarker.style.color = playerTwo.color;
         }
+    }
+
+    const origOrder = () => {
+        const oneMarker = document.querySelector(".player-one-marker");
+        const twoMarker = document.querySelector(".player-two-marker");
+
+        oneMarker.style.color = playerOne.color;
+        twoMarker.style.color = playerTwo.color;
+    }
+
+    const newGame = () => {
+        playerOne.name = "Player One";
+        playerOne.marker = 'X';
+        playerOne.num = 1;
+        playerOne.order = 1;
+        playerTwo.name = "Player Two";
+        playerTwo.marker = 'O';
+        playerTwo.num = 2;
+        playerTwo.order = 2;
+        activePlayer = playerOne;
+        gameOver = false;
+        gameBoard.clearBoard();
+        displayController.clearScore();
+        displayController.colorNew();
+        displayController.drawBoard();
+        setPlayerNames(playerOne.name, playerTwo.name);
+        origOrder();
+        origMarker();
+        menuController.showTitle();
     }
 
     return {
@@ -127,7 +162,8 @@ const gameController = (() => {
         getGameOver,
         newRound,
         setPlayerNames,
-        switchOrder
+        switchOrder,
+        newGame
     };
 })();
 
@@ -219,6 +255,15 @@ const displayController = (() => {
         console.log(player);
     }
 
+    const clearScore = () => {
+        const playerOneScoreDisplay = document.querySelector(".player-one-score");
+        const playerTwoScoreDisplay = document.querySelector(".player-two-score");
+        const tieCountDisplay = document.querySelector(".tie-count");
+        playerOneScoreDisplay.textContent = 0;
+        playerTwoScoreDisplay.textContent = 0;
+        tieCountDisplay.textContent = 0;
+    }
+
     const updateTies = () => {
         const tieCountDisplay = document.querySelector(".tie-count");
         let ties = parseInt(tieCountDisplay.textContent);
@@ -232,7 +277,8 @@ const displayController = (() => {
         colorTie,
         colorNew,
         updateScore,
-        updateTies
+        updateTies,
+        clearScore
     };
 })();
 
@@ -264,6 +310,8 @@ const menuController = (() => {
             nameModal.classList.remove("modal-active");
             overlay.classList.remove("overlay-active");
             gameController.setPlayerNames(playerOneName, playerTwoName)
+            playerOneNameInput.value = "";
+            playerTwoNameInput.value = "";
         }
 
     })
@@ -287,9 +335,6 @@ const menuController = (() => {
         modeModal.classList.add("modal-active");
     })
 
-
-
-
     const announceWinner = () => {
         let winner = gameController.getActivePlayer();
         winnerName.textContent = winner.name;
@@ -302,9 +347,33 @@ const menuController = (() => {
         overlay.classList.add("overlay-active");
     }
 
+    const showTitle = () => {
+        titleModal.classList.add("modal-active");
+        overlay.classList.add("overlay-active");
+    }
+
+    const endBtn = document.querySelector(".end-btn");
+    const endGameBtn = document.querySelector(".end-game-btn");
+    const tieEndGameBtn = document.querySelector(".tie-end-game-btn");
+
+    endBtn.addEventListener("click", () => {
+        gameController.newGame();
+    })
+
+    endGameBtn.addEventListener("click", () => {
+        roundOverModal.classList.remove("modal-active");
+        gameController.newGame();
+    })
+
+    tieEndGameBtn.addEventListener("click", () => {
+        tiedModal.classList.remove("modal-active");
+        gameController.newGame();
+    })
+
     return {
         announceWinner,
-        announceTie
+        announceTie,
+        showTitle
     };
 
 })();
