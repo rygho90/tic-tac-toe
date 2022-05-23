@@ -133,7 +133,8 @@ body {
 .player-name-modal,
 .round-over-modal,
 .tied-modal,
-.title-modal {
+.title-modal,
+.difficulty-modal {
     width: 400px;
     height: 300px;
     border: solid 1px black;
@@ -168,7 +169,10 @@ body {
 
 .player-mode,
 .computer-mode,
-.start-btn {
+.start-btn,
+.easy-difficulty,
+.medium-difficulty,
+.hard-difficulty {
     width: 150px;
     height: 40px;
     border-radius: 10px;

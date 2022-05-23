@@ -303,10 +303,17 @@ const menuController = (() => {
     const newRoundBtn = document.querySelector(".new-round-btn");
     const tieNewRoundBtn = document.querySelector(".tie-new-round-btn");
     const newGameBtn = document.querySelector(".new-game-btn");
+    const computerModeBtn = document.querySelector(".computer-mode");
+    const difficultyModal = document.querySelector(".difficulty-modal");
 
     playerModeBtn.addEventListener("click", () => {
         modeModal.classList.remove("modal-active");
         nameModal.classList.add("modal-active");
+    })
+
+    computerModeBtn.addEventListener("click", () => {
+        modeModal.classList.remove("modal-active");
+        difficultyModal.classList.add("modal-active");
     })
 
     startGameBtn.addEventListener("click", () => {
